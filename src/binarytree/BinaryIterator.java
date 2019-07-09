@@ -52,7 +52,7 @@ public class BinaryIterator<T extends Comparable> implements Iterator<T> {
         if ( right != null )
             return right.findSmallestNode();
         
-        return current.findLargerParent();
+        return current.findGreaterParent();
     }
 
     @Override

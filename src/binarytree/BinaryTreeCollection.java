@@ -21,6 +21,7 @@ public class BinaryTreeCollection<T extends Comparable> implements Collection<T>
     private BinaryNode<T> root;
     private int size = 0;
     private int changes = 0;
+    private int selfBalancingFrequency = 10;
 
     /**
      * Returns the root node or null if the collection is empty.
@@ -39,10 +40,76 @@ public class BinaryTreeCollection<T extends Comparable> implements Collection<T>
     /**
      * Returns the number of changes since the creation of the instance.
      */
-    protected int getChanges() {
+    public int getChanges() {
         return changes;
     }
+    
+    private void incrementChanges() {
+        changes++;
+        checkIfSelfBalancingIsNeeded();
+    }
 
+    /**
+     * Returns the frequency when the self-balancing process will be executed.
+     * @see #setSelfBalancingFrequency(int) 
+     */
+    public int getSelfBalancingFrequency() {
+        return selfBalancingFrequency;
+    }
+
+    /**
+     * Sets the frequency when the self-balancing process will be executed.
+     * @param selfBalancingFrequency Give zero or less to disable self-balancing.
+     */
+    public void setSelfBalancingFrequency(int selfBalancingFrequency) {
+        this.selfBalancingFrequency = selfBalancingFrequency;
+    }
+    
+    private void checkIfSelfBalancingIsNeeded() {
+        if ( selfBalancingFrequency > 0 && changes % selfBalancingFrequency == 0 && root != null )
+            selfBalancing();
+    }
+    
+    protected void selfBalancing() {
+        BinaryNode<T> left = root.getLeft();
+        BinaryNode<T> right = root.getRight();
+        
+        int leftDept = left != null ? left.dept() : 0;
+        int rightDept = right != null ? right.dept() : 0;
+        int steps = Math.abs((leftDept - rightDept) / 2);
+        
+        if ( steps > 0 ) {
+            if ( leftDept < rightDept ) {
+                for ( int i = 0; i < steps; i++ ) 
+                    moveRootLeftwards();
+            }
+            else {
+                for ( int i = 0; i < steps; i++ ) 
+                    moveRootRightwards();
+            }
+        }
+    }
+    
+    private void moveRootLeftwards() {
+        BinaryNode<T> node = root;
+        root = node.getRight();
+        root.setParent(null);
+        node.setRight(null);
+        BinaryNode<T> smallest = root.findSmallestNode();
+        smallest.setLeft(node);
+        node.setParent(smallest);
+    }
+    
+    private void moveRootRightwards() {
+        BinaryNode<T> node = root;
+        root = node.getLeft();
+        root.setParent(null);
+        node.setLeft(null);
+        BinaryNode<T> greatest = root.findGreatestNode();
+        greatest.setRight(node);
+        node.setParent(greatest);
+    }
+    
     @Override
     public int size() {
         return size;
@@ -146,7 +213,7 @@ public class BinaryTreeCollection<T extends Comparable> implements Collection<T>
     @Nonnull
     protected BinaryNode<T> createNode(@Nullable BinaryNode<T> parent, @Nonnull T element) {
         size++;
-        changes++;    
+        incrementChanges();
         return new BinaryNode<>(this, parent, element);
     }
     
@@ -218,7 +285,7 @@ public class BinaryTreeCollection<T extends Comparable> implements Collection<T>
         
         if ( decrementSize )
             size--;
-        changes++;
+        incrementChanges();
         
         return true;		        
     }
@@ -286,7 +353,7 @@ public class BinaryTreeCollection<T extends Comparable> implements Collection<T>
             root.clear();
             setRoot(null);
             size = 0;
-            changes++;
+            incrementChanges();
         }
     }      
     

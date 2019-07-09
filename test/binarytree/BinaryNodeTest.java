@@ -42,6 +42,18 @@ public class BinaryNodeTest {
     }
 
     /**
+     * Test of getCollection method, of class BinaryNode.
+     */
+    @Test
+    public void testGetCollection() {
+        System.out.println("getCollection");
+        BinaryTreeCollection<Integer> list = BinaryTreeCollectionTest.createTestCollection();
+        
+        BinaryNode instance = list.getRoot();
+        assertEquals(list, instance.getCollection());
+    }
+    
+    /**
      * Test of getData and setData methods, of class BinaryNode.
      */
     @Test
@@ -187,16 +199,28 @@ public class BinaryNodeTest {
     }
 
     /**
-     * Test of findLargerParent method, of class BinaryNode.
+     * Test of findGreatestNode method, of class BinaryNode.
      */
     @Test
-    public void testFindLargerParent() {
+    public void testFindGreatestNode() {
+        System.out.println("findGreatestNode");
+        BinaryTreeCollection<Integer> list = BinaryTreeCollectionTest.createTestCollection();
+        assertEquals(list.find(25), list.find(3).findGreatestNode());
+        assertEquals(list.find(9), list.find(9).findGreatestNode());        
+        assertEquals(list.find(19), list.find(15).findGreatestNode());
+    }
+    
+    /**
+     * Test of findGreaterParent method, of class BinaryNode.
+     */
+    @Test
+    public void testFindGreaterParent() {
         System.out.println("findLargerParent");
         BinaryTreeCollection<Integer> list = BinaryTreeCollectionTest.createTestCollection();
-        assertEquals(list.find(3), list.find(1).findLargerParent());        
-        assertEquals(list.find(8), list.find(6).findLargerParent());        
-        assertEquals(list.find(20), list.find(15).findLargerParent());        
-        assertEquals(list.find(20), list.find(19).findLargerParent());        
+        assertEquals(list.find(3), list.find(1).findGreaterParent());        
+        assertEquals(list.find(8), list.find(6).findGreaterParent());        
+        assertEquals(list.find(20), list.find(15).findGreaterParent());        
+        assertEquals(list.find(20), list.find(19).findGreaterParent());        
     }
 
     /**
@@ -225,6 +249,19 @@ public class BinaryNodeTest {
         assertEquals(null, right.getParent());
         assertEquals(null, right.getLeft());
         assertEquals(null, right.getRight());
+    }
+
+    /**
+     * Test of dept method, of class BinaryNode.
+     */
+    @Test
+    public void testDept() {
+        System.out.println("dept");
+        BinaryTreeCollection<Integer> list = BinaryTreeCollectionTest.createTestCollection();
+        assertEquals(8, list.find(3).dept());
+        assertEquals(6, list.find(10).dept());
+        assertEquals(4, list.find(15).dept());
+        assertEquals(1, list.find(9).dept());
     }
 
 }

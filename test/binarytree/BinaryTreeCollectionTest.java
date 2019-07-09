@@ -46,6 +46,7 @@ public class BinaryTreeCollectionTest {
     
     public static BinaryTreeCollection<Integer> createTestCollection() {
         BinaryTreeCollection<Integer> instance = new BinaryTreeCollection<>();
+        instance.setSelfBalancingFrequency(0);
         instance.addAll(NUMBERS);
         return instance;
     }
@@ -85,6 +86,46 @@ public class BinaryTreeCollectionTest {
         assertEquals(changes, instance.getChanges());        
     }
 
+    /**
+     * Test of getSelfBalancingFrequency and setSelfBalancingFrequency methods, of class BinaryTreeCollection.
+     */
+    @Test
+    public void testGetAndSetSelfBalancingFrequency() {
+        System.out.println("getSelfBalancingFrequency");
+        BinaryTreeCollection<Integer> instance = createTestCollection();
+
+        int number1 = 10;
+        int number2 = 100;
+        instance.setSelfBalancingFrequency(number1);
+        assertEquals(number1, instance.getSelfBalancingFrequency());
+        
+        instance.setSelfBalancingFrequency(number2);
+        assertEquals(number2, instance.getSelfBalancingFrequency());
+    }    
+    
+    /**
+     * Test of selfBalancing method, of class BinaryTreeCollection.
+     */
+    @Test
+    public void testSelfBalancing() {
+        System.out.println("selfBalancing");
+        BinaryTreeCollection<Integer> instance = createTestCollection();
+        Object[] items = instance.toArray();
+        instance.selfBalancing();
+
+        assertEquals(NUMBERS.size(), instance.size());
+        assertArrayEquals(items, instance.toArray());
+        
+        BinaryNode root = instance.getRoot();
+        BinaryNode left = root.getLeft();
+        BinaryNode right = root.getRight();
+        
+        int leftDept = left != null ? left.dept() : 0;
+        int rightDept = right != null ? right.dept() : 0;
+        int steps = Math.abs((leftDept - rightDept) / 2);
+        assertEquals(0, steps);        
+    }    
+    
     /**
      * Test of size method, of class BinaryTreeCollection.
      */

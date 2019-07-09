@@ -109,10 +109,21 @@ public class BinaryNode<T extends Comparable> {
     }    
 
     /**
-     * Returns the first node of the parent chain that contains larger data than this node.
+     * Returns the node that contains the greatest data in this subtree.
+     */
+    @Nonnull
+    protected BinaryNode<T> findGreatestNode() {
+        BinaryNode<T> current = this;        
+        while ( current.right != null )
+            current = current.right;
+        return current;
+    }    
+
+    /**
+     * Returns the first node of the parent chain that contains greater data than this node.
      */
     @Nullable
-    protected BinaryNode<T> findLargerParent() {
+    protected BinaryNode<T> findGreaterParent() {
         BinaryNode<T> current = parent;
         while ( current != null &&  current.getData().compareTo(data) < 0 ) {
             current = current.parent;
@@ -132,6 +143,16 @@ public class BinaryNode<T extends Comparable> {
         left = null;
         right = null;
         parent = null;
-    }    
+    }   
+    
+    /**
+     * Returns how deep is the subtree of this node. Returns 1 if this node has no children.
+     */
+    public int dept() {
+        int leftDept = this.left != null ? this.left.dept() : 0;
+        int rightDept = this.right != null ? this.right.dept() : 0;
+        
+        return ( leftDept > rightDept ? leftDept : rightDept ) + 1;
+    }
     
 }
